@@ -1,0 +1,100 @@
+body {
+    background-color: black;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.buttonsContainer {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-items: center;
+
+}
+
+button {
+    display: inline-block;
+    border: white solid 1px;
+    padding: 1em 2em;
+    margin: 0;
+    text-decoration: none;
+    background: black;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background 250ms ease-in-out,
+    transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.controlBtn {
+    display: none;
+}
+
+canvas {
+    background: rgb(32,32,32);
+    display: block;
+    margin: 10px auto 0;
+}
+
+#startGame {
+
+}
+
+
+/* iphone 6,7,8 */
+@media only screen
+and (device-width : 375px)
+and (device-height : 667px)
+and (-webkit-device-pixel-ratio : 2) {
+    canvas{
+        width: 95%;
+        height: auto;
+    }
+    .controlBtn {
+        display: inline-block;
+    }
+
+}
+/* medium phones */
+@media screen and (max-device-width: 480px) and (orientation: portrait){
+    canvas{
+        width: 95%;
+        height: auto;
+    }
+    .controlBtn {
+        display: inline-block;
+    }
+}
+/* big phones */
+@media screen and (max-device-width: 640px){
+    canvas{
+        width: 95%;
+        height: auto;
+    }
+    .controlBtn {
+        display: inline-block;
+    }
+}
+
+/* #### Tablets Portrait or Landscape #### */
+@media screen and (min-device-width: 765px) and (max-device-width: 1024px){
+    canvas{
+        width: 600px;
+        height: auto;
+    }
+    .controlBtn {
+        display: inline-block;
+    }
+}
+
