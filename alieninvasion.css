@@ -1,0 +1,53 @@
+body {
+    background-color: black;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+canvas {
+    background: rgb(32,32,32);
+    display: block;
+    margin: 10px auto 0;
+}
+
+/* iphone 6,7,8 */
+@media only screen
+and (device-width : 375px)
+and (device-height : 667px)
+and (-webkit-device-pixel-ratio : 2) {
+    canvas{
+        background: rgb(32,32,32);
+        width: 95%;
+        height: auto;
+    }
+
+}
+/* medium phones */
+@media screen and (max-device-width: 480px) and (orientation: portrait){
+    canvas{
+        background: rgb(32,32,32);
+        width: 95%;
+        height: auto;
+    }
+}
+/* big phones */
+@media screen and (max-device-width: 640px){
+    canvas{
+        background: rgb(32,32,32);
+        width: 95%;
+        height: auto;
+    }
+}
+
+/* #### Tablets Portrait or Landscape #### */
+@media screen and (min-device-width: 765px) and (max-device-width: 1024px){
+    canvas{
+        background: rgb(32,32,32);
+        width: 600px;
+        height: auto;
+    }
+}
+
