@@ -73,6 +73,18 @@ function game() {
     var rocketSpeed = 5;
     var rockets = [];
     var hitMarker = 0;
+    // bonus box
+    var bonusBoxHeight = 17;
+    var bonusBoxWidth = 17;
+    var bonus = false;
+    var bonusBoxes = [];
+    var laserOn = false;
+    var laser = null;
+    var laserRadius = 2;
+    var laserSpeed = 25;
+    var shieldOn = false;
+    var shield = null;
+    var shieldRadius = 30;
     // aliens
     var alienRowCount = 4;
     var alienColumnCount = 4;
@@ -84,7 +96,7 @@ function game() {
     var alienOffsetTop = alienRespawnY;
     var alienOffsetLeft = alienRespawnX;
     var aliens = [];
-    var alienColors = ["magenta","MediumOrchid","DarkOrchid","DarkMagenta","purple", "gold","white"]
+    var alienColors = ["magenta","MediumOrchid","DarkOrchid","DarkMagenta","purple", "gold","white","gold","white","black","gold"];
     createAliens(); // creates aliens and puts them in aliens array
     var aliensHitRight = false;
     var aliensHitLeft = true;
@@ -155,6 +167,37 @@ function game() {
         this.fire = function(){
             this.y -= rocketSpeed;
         };
+    }
+
+    function BonusBox(){
+        this.x = Math.floor(Math.random() * canvas.width) + 0.5;
+        this.y = canvas.height - bonusBoxHeight;
+        this.color = 'blue';
+        this.status = 1;
+        this.counter = 0;
+
+        this.show = function(){
+            ctx.beginPath();
+            ctx.rect(this.x, this.y, bonusBoxWidth, bonusBoxHeight);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+        };
+
+    }
+
+    function Laser(){
+        this.counter = 0;
+
+        this.show = function(x){
+            this.x = x;
+            ctx.beginPath();
+            ctx.rect(this.x, 0, laserRadius, canvas.height - shipHeight);
+            ctx.fillStyle = "white";
+            ctx.fill();
+            ctx.closePath();
+        };
+
     }
 
     function Alien() {
@@ -252,6 +295,7 @@ function game() {
             ship.explodes();
         }
     }
+
     // draw rockets that haven't hit alien yet
     function drawRockets(){
         if(rockets.length > 0) {
@@ -263,6 +307,33 @@ function game() {
                     rockets.splice(x--,1);
                 }
             }
+        }
+    }
+
+    function drawBonusBoxes(){
+        if(bonusBoxes.length > 0){
+            for(let x = 0; x < bonusBoxes.length; x++){
+                var box = bonusBoxes[x];
+                box.show();
+                box.counter += .1;
+                if(box.x + bonusBoxWidth >= ship.shipX  && box.x <= ship.shipX + ship.shipWidth){
+                    laser = new Laser();
+                    bonus = true;
+                    laserOn = true;
+                    bonusBoxes.splice(x--,1);
+                }
+                else if(box.counter >= 1000){
+                    bonusBoxes.splice(x--,1);
+                }
+            }
+        }
+        if(laserOn){
+            if(laser.counter >= 40){
+                laserOn = false;
+                bonus = false;
+                laser = null;
+            }
+
         }
     }
 
@@ -292,6 +363,23 @@ function game() {
                         aliensHitLeft = true;
                         aliensHitRight = false;
                     }
+                    if(bonus){
+                        if(laserOn){
+                            if(upPressed) {
+                                if (laser.x + laserRadius >= thisAlien.x &&
+                                    laser.x - laserRadius <= thisAlien.x + alienWidth) {
+                                    hitMarker = laser.x;
+                                    thisAlien.status = 2;
+                                    points += 10;
+                                    if(level <= 5){
+                                        lrAlienSpeed += .01;
+                                        alienDescentSpeed += 0.008;
+                                        bombingRate -= 20;
+                                    }
+                                }
+                            }
+                        }
+                    }
                     // check to see if rocket hits alien
                     for(var i = 0; i < rockets.length; i++) {
                         if(rockets[i].status !== 0) {
@@ -308,10 +396,14 @@ function game() {
                                 thisAlien.status = 2;
                                 points += 10;       // player gets points
                                 // make game harder every time player destroys alien
-                                if(level >= 5){
+                                if(level <= 5){
                                     lrAlienSpeed += .01;
                                     alienDescentSpeed += 0.008;
                                     bombingRate -= 20;
+                                }
+                                let ran = Math.random();
+                                if(ran <= .67 && ran >= .66){
+                                    bonusBoxes.push(new BonusBox());
                                 }
                             }
                         }
@@ -341,10 +433,16 @@ function game() {
             alienOffsetTop = alienRespawnY;
             alienOffsetLeft = alienRespawnX;
             level++;
-            //rateOfFire -= 100; 
+            if(level >= 11){
+                clearInterval(loopGame);
+                playerWins(points);
+            }
             levelTimer = 0;
             newLvl = true;
             createAliens();
+            if(level === 5){
+                rateOfFire -= 100;
+            }
         }
         if(aliensHitRight){
             alienOffsetLeft -= lrAlienSpeed;
@@ -373,8 +471,10 @@ function game() {
                     bombs[x].show();
                     bombs[x].dropBomb();
                     // if bomb hits ship, blow it up
-                    if(bombs[x].x + bombs[x].bombRadius >= ship.shipX && bombs[x].x - bombs[x].bombRadius <= ship.shipX + ship.shipWidth &&
-                        bombs[x].y > canvas.height - ship.shipHeight){
+                    if(bombs[x].x + bombs[x].bombRadius >= ship.shipX &&
+                        bombs[x].x - bombs[x].bombRadius <= ship.shipX + ship.shipWidth &&
+                        bombs[x].y > canvas.height - ship.shipHeight)
+                    {
                         bombs[x].blowUp();
                         ship.status = 2;
                     }
@@ -417,6 +517,8 @@ function game() {
         drawRockets();
         // draws alien bombs
         drawBombs();
+        //draw bonus Boxes
+        drawBonusBoxes();
 
         // control movements + rocket fire
         if(rightPressed && ship.shipX <= canvas.width-ship.shipWidth) {
@@ -425,12 +527,17 @@ function game() {
         else if(leftPressed && ship.shipX >= 0) {
             ship.shipX -= 6;
         }
-        else if(upPressed){
-            if(((new Date()).valueOf() - lastRocketTime) > rateOfFire) {
+        if(upPressed){
+            if(laserOn){
+                laser.show(ship.shipX + (ship.shipWidth / 2));
+                laser.counter += 1;
+            }
+            else if(((new Date()).valueOf() - lastRocketTime) > rateOfFire) {
                 rockets.push(new Rocket(ship.shipX + (ship.shipWidth / 2), canvas.height - ship.shipHeight));
                 lastRocketTime = (new Date()).valueOf();
             }
         }
+
 
         if(newLvl && levelTimer < 100){
             displayLvl();
@@ -535,4 +642,24 @@ function gameOver(points, level){
     canvas.addEventListener("touchmove", initGame);
 }
 
-
+function playerWins(points){
+    var canvas = document.getElementById("gameCanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.font = '40px Monaco';
+    ctx.fillStyle = 'red';
+    ctx.fillText('YOU SAVED EARTH!', 10, 50);
+    ctx.fillText('FREE BEER 4 LIFE!', 10, 250);
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.font = '15px Monaco';
+    ctx.fillStyle = 'red';
+    ctx.fillText('SCORE = '+ points, 10, 350);
+    ctx.fillText('Click or Swipe Screen to Replay', 10, 400);
+    ctx.fill();
+    ctx.closePath();
+    canvas.addEventListener("click", initGame);
+    canvas.addEventListener("touchmove", initGame);
+}
