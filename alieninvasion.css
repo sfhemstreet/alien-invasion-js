@@ -7,10 +7,16 @@ body {
     margin: 0;
 }
 
-canvas {
+#gameCanvas {
     background: rgb(32,32,32);
     display: block;
     margin: 10px auto 0;
+}
+
+#controlCanvas {
+    background: rgb(20,20,20);
+    display: block;
+    margin: auto;
 }
 
 /* iphone 6,7,8 */
@@ -18,36 +24,55 @@ canvas {
 and (device-width : 375px)
 and (device-height : 667px)
 and (-webkit-device-pixel-ratio : 2) {
-    canvas{
+    #gameCanvas{
         background: rgb(32,32,32);
         width: 95%;
         height: auto;
     }
-
+    #controlCanvas {
+        background: rgb(20,20,20);
+        display: block;
+        width:95%;
+    }
 }
 /* medium phones */
 @media screen and (max-device-width: 480px) and (orientation: portrait){
-    canvas{
+    #gameCanvas{
         background: rgb(32,32,32);
         width: 95%;
         height: auto;
+    }
+    #controlCanvas {
+        background: rgb(20,20,20);
+        width: 95%;
+        display: block;
     }
 }
 /* big phones */
 @media screen and (max-device-width: 640px){
-    canvas{
+    #gameCanvas{
         background: rgb(32,32,32);
         width: 95%;
         height: auto;
+    }
+    #controlCanvas {
+        background: rgb(20,20,20);
+        width: 95%;
+        display: block;
     }
 }
 
 /* #### Tablets Portrait or Landscape #### */
 @media screen and (min-device-width: 765px) and (max-device-width: 1024px){
-    canvas{
+    #gameCanvas{
         background: rgb(32,32,32);
         width: 600px;
         height: auto;
+    }
+    #controlCanvas {
+        background: rgb(20,20,20);
+        width: 600px;
+        display: block;
     }
 }
 
