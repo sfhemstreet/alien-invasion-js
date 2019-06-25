@@ -1,3 +1,6 @@
+// SPENCER HEMSTREET
+
+
 window.onload = startScreen;
 
 // initial start screen

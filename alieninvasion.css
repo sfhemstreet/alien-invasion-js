@@ -1,3 +1,4 @@
+/* SPENCER HEMSTREET */
 body {
     background-color: black;
 }
@@ -19,7 +20,7 @@ body {
     margin: auto;
 }
 
-/* iphone 6,7,8 */
+
 @media only screen
 and (device-width : 375px)
 and (device-height : 667px)
@@ -48,7 +49,7 @@ and (-webkit-device-pixel-ratio : 2) {
         display: block;
     }
 }
-/* big phones */
+
 @media screen and (max-device-width: 640px){
     #gameCanvas{
         background: rgb(32,32,32);
@@ -62,7 +63,6 @@ and (-webkit-device-pixel-ratio : 2) {
     }
 }
 
-/* #### Tablets Portrait or Landscape #### */
 @media screen and (min-device-width: 765px) and (max-device-width: 1024px){
     #gameCanvas{
         background: rgb(32,32,32);
